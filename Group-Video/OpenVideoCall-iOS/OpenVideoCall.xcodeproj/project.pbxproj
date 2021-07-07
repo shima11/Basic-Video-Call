@@ -27,10 +27,6 @@
 		07F52EBF1D62F39D006DDCD4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07F52EBD1D62F39D006DDCD4 /* LaunchScreen.storyboard */; };
 		3832FA5B227FC56200E50E69 /* FileCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3832FA5A227FC56200E50E69 /* FileCenter.swift */; };
 		389D3890230BD19D00704A8F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 389D388F230BD19D00704A8F /* README.md */; };
-		8BD0F6B725A57D6E0052B46F /* Agoraffmpeg.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B225A57D6D0052B46F /* Agoraffmpeg.xcframework */; };
-		8BD0F6B825A57D6E0052B46F /* Agorafdkaac.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B325A57D6D0052B46F /* Agorafdkaac.xcframework */; };
-		8BD0F6B925A57D6E0052B46F /* AgoraCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B425A57D6D0052B46F /* AgoraCore.xcframework */; };
-		8BD0F6BB25A57D6E0052B46F /* AgoraSoundTouch.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B625A57D6E0052B46F /* AgoraSoundTouch.xcframework */; };
 		8BD0F6BC25A57D8A0052B46F /* AgoraRtcKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B525A57D6E0052B46F /* AgoraRtcKit.xcframework */; };
 		8BD0F6BD25A57D8A0052B46F /* AgoraRtcKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B525A57D6E0052B46F /* AgoraRtcKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A76C26F523878C8F0047E150 /* AGEVideoLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76C26F023878C8F0047E150 /* AGEVideoLayout.swift */; };
@@ -44,6 +40,14 @@
 		A7A3C65A228ACFB4005BB816 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A3C659228ACFB4005BB816 /* Settings.swift */; };
 		A7FC1EF12295701500F850F2 /* RoomOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FC1EF02295701500F850F2 /* RoomOptionsViewController.swift */; };
 		A7FC1EF522963CA200F850F2 /* LastmileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FC1EF422963CA200F850F2 /* LastmileViewController.swift */; };
+		D48023D626957BD000D5E660 /* Agorafdkaac.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B325A57D6D0052B46F /* Agorafdkaac.xcframework */; };
+		D48023D726957BD000D5E660 /* Agorafdkaac.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B325A57D6D0052B46F /* Agorafdkaac.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D48023D826957BEA00D5E660 /* AgoraSoundTouch.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B625A57D6E0052B46F /* AgoraSoundTouch.xcframework */; };
+		D48023D926957BEA00D5E660 /* AgoraSoundTouch.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B625A57D6E0052B46F /* AgoraSoundTouch.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D48023DA26957BEB00D5E660 /* Agoraffmpeg.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B225A57D6D0052B46F /* Agoraffmpeg.xcframework */; };
+		D48023DB26957BEB00D5E660 /* Agoraffmpeg.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B225A57D6D0052B46F /* Agoraffmpeg.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D48023DC26957BEE00D5E660 /* AgoraCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B425A57D6D0052B46F /* AgoraCore.xcframework */; };
+		D48023DD26957BEE00D5E660 /* AgoraCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD0F6B425A57D6D0052B46F /* AgoraCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,7 +57,11 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				D48023D726957BD000D5E660 /* Agorafdkaac.xcframework in Embed Frameworks */,
+				D48023DB26957BEB00D5E660 /* Agoraffmpeg.xcframework in Embed Frameworks */,
 				8BD0F6BD25A57D8A0052B46F /* AgoraRtcKit.xcframework in Embed Frameworks */,
+				D48023D926957BEA00D5E660 /* AgoraSoundTouch.xcframework in Embed Frameworks */,
+				D48023DD26957BEE00D5E660 /* AgoraCore.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -120,11 +128,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8BD0F6B825A57D6E0052B46F /* Agorafdkaac.xcframework in Frameworks */,
-				8BD0F6BB25A57D6E0052B46F /* AgoraSoundTouch.xcframework in Frameworks */,
+				D48023D626957BD000D5E660 /* Agorafdkaac.xcframework in Frameworks */,
 				8BD0F6BC25A57D8A0052B46F /* AgoraRtcKit.xcframework in Frameworks */,
-				8BD0F6B725A57D6E0052B46F /* Agoraffmpeg.xcframework in Frameworks */,
-				8BD0F6B925A57D6E0052B46F /* AgoraCore.xcframework in Frameworks */,
+				D48023D826957BEA00D5E660 /* AgoraSoundTouch.xcframework in Frameworks */,
+				D48023DA26957BEB00D5E660 /* Agoraffmpeg.xcframework in Frameworks */,
+				D48023DC26957BEE00D5E660 /* AgoraCore.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,9 +294,7 @@
 				TargetAttributes = {
 					07F52EB01D62F39D006DDCD4 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = GM72UGLGZW;
 						LastSwiftMigration = 1000;
-						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -501,9 +507,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development: Qianze Zhang (3C9KJFP729)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Qianze Zhang (3C9KJFP729)";
-				DEVELOPMENT_TEAM = GM72UGLGZW;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 64T4PJ8WCZ;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -522,7 +529,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.agora.OpenVideoCall;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = App;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -536,9 +543,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development: Qianze Zhang (3C9KJFP729)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Qianze Zhang (3C9KJFP729)";
-				DEVELOPMENT_TEAM = GM72UGLGZW;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 64T4PJ8WCZ;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -557,7 +565,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.agora.OpenVideoCall;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = App;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.2;
