@@ -15,39 +15,39 @@ protocol RoomVCDataSource: NSObjectProtocol {
 }
 
 class RoomViewController: UIViewController {
-  
+
   @IBOutlet weak var containerView: AGEVideoContainer!
   @IBOutlet weak var messageTableContainerView: UIView!
-  
+
   @IBOutlet weak var cameraButton: UIButton!
   @IBOutlet weak var audioMixingButton: UIButton!
   @IBOutlet weak var speakerPhoneButton: UIButton!
   @IBOutlet weak var beautyButton: UIButton!
   @IBOutlet weak var muteVideoButton: UIButton!
   @IBOutlet weak var muteAudioButton: UIButton!
-  
+
   @IBAction func didTapLeaveButton(_ sender: Any) {
-    
+
     leaveChannel()
     navigationController?.popViewController(animated: true)
   }
-  
+
   @IBOutlet var backgroundDoubleTap: UITapGestureRecognizer!
-  
+
   private var agoraKit: AgoraRtcEngineKit {
     return dataSource!.roomVCNeedAgoraKit()
   }
-  
+
   private var settings: Settings {
     return dataSource!.roomVCNeedSettings()
   }
-  
+
   private var isSwitchCamera = true {
     didSet {
       agoraKit.switchCamera()
     }
   }
-  
+
   private var isAudioMixing = false {
     didSet {
       guard oldValue != isAudioMixing else {
@@ -56,19 +56,22 @@ class RoomViewController: UIViewController {
       audioMixingButton?.isSelected = isAudioMixing
       if isAudioMixing {
         // play music file
+        // Background Musicとか流したいときに使える
         agoraKit.startAudioMixing(
           FileCenter.audioFilePath(),
           loopback: false,
           replace: false,
-          cycle: 1
+          cycle: 1,
+          startPos: 0
         )
+
       } else {
         // stop play
         agoraKit.stopAudioMixing()
       }
     }
   }
-  
+
   private var isBeauty = false {
     didSet {
       guard oldValue != isBeauty else {
@@ -87,7 +90,7 @@ class RoomViewController: UIViewController {
       agoraKit.setBeautyEffectOptions(isBeauty, options: options)
     }
   }
-  
+
   private var isSpeakerPhone = true {
     didSet {
       guard oldValue != isSpeakerPhone else {
@@ -98,7 +101,7 @@ class RoomViewController: UIViewController {
       agoraKit.setEnableSpeakerphone(isSpeakerPhone)
     }
   }
-  
+
   private var isVideoMuted = false {
     didSet {
       guard oldValue != isVideoMuted else {
@@ -111,7 +114,7 @@ class RoomViewController: UIViewController {
       agoraKit.muteLocalVideoStream(isVideoMuted)
     }
   }
-  
+
   private var isAudioMuted = false {
     didSet {
       guard oldValue != isAudioMuted else {
@@ -122,7 +125,7 @@ class RoomViewController: UIViewController {
       agoraKit.muteLocalAudioStream(isAudioMuted)
     }
   }
-  
+
   private var isDebugMode = false {
     didSet {
       guard oldValue != isDebugMode else {
@@ -132,33 +135,33 @@ class RoomViewController: UIViewController {
       messageTableContainerView.isHidden = !isDebugMode
     }
   }
-  
+
   private var videoSessions = [VideoSession]() {
     didSet {
       print("### video sessions", videoSessions.count)
       updateBroadcastersView()
     }
   }
-  
+
   private let maxVideoSession = 4
-  
+
   private weak var optionsVC: RoomOptionsViewController?
   private lazy var options = RoomOptions(isDebugMode: false)
   private var messageVC: MessageViewController?
-  
+
   weak var dataSource: RoomVCDataSource?
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
     title = settings.roomName
     loadAgoraKit()
   }
-  
+
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     guard let segueId = segue.identifier else {
       return
     }
-    
+
     switch segueId {
     case "roomEmbedMessage":
       messageVC = segue.destination as? MessageViewController
@@ -171,31 +174,31 @@ class RoomViewController: UIViewController {
       break
     }
   }
-  
+
   deinit {
     leaveChannel()
   }
-  
+
   @IBAction func doAudioMixingPressed(_ sender: UIButton) {
     isAudioMixing.toggle()
   }
-  
+
   @IBAction func doBeautyPressed(_ sender: UIButton) {
     isBeauty.toggle()
   }
-  
+
   @IBAction func doSpeakerPhonePressed(_ sender: UIButton) {
     isSpeakerPhone.toggle()
   }
-  
+
   @IBAction func doMuteVideoPressed(_ sender: UIButton) {
     isVideoMuted.toggle()
   }
-  
+
   @IBAction func doMuteAudioPressed(_ sender: UIButton) {
     isAudioMuted.toggle()
   }
-  
+
   @IBAction func doCameraPressed(_ sender: UIButton) {
     isSwitchCamera.toggle()
   }
@@ -203,12 +206,13 @@ class RoomViewController: UIViewController {
 
 // MARK: - AgoraRtcEngineKit
 private extension RoomViewController {
+
   func loadAgoraKit() {
     // Step 1, set delegate
     agoraKit.delegate = self
     // Step 2, set communication mode
     agoraKit.setChannelProfile(.communication)
-    
+
     // Step 3, enable the video module
     agoraKit.enableVideo()
     // set video configuration
@@ -223,7 +227,7 @@ private extension RoomViewController {
     // add local render view and start preview
     addLocalSession()
     agoraKit.startPreview()
-    
+
     // Step 4, enable encryption mode
     if let type = settings.encryptionType, let text = type.text, !text.isEmpty {
       let config = AgoraEncryptionConfig()
@@ -231,7 +235,7 @@ private extension RoomViewController {
       config.encryptionMode = type.modeValue()
       agoraKit.enableEncryption(true, encryptionConfig: config)
     }
-    
+
     // Step 5, join channel and start group chat
     // If join  channel success, agoraKit triggers it's delegate function
     // 'rtcEngine(_ engine: AgoraRtcEngineKit, didJoinChannel channel: String, withUid uid: UInt, elapsed: Int)'
@@ -241,19 +245,19 @@ private extension RoomViewController {
       info: nil,
       uid: 0,
       joinSuccess: { channel,uid,_  in
-        
+
       }
     )
     setIdleTimerActive(false)
   }
-  
+
   func addLocalSession() {
     let localSession = VideoSession.localSession()
     localSession.updateInfo(fps: settings.frameRate.rawValue)
     videoSessions.append(localSession)
     agoraKit.setupLocalVideo(localSession.canvas)
   }
-  
+
   func leaveChannel() {
     // Step 1, release local AgoraRtcVideoCanvas instance
     agoraKit.setupLocalVideo(nil)
@@ -261,20 +265,20 @@ private extension RoomViewController {
     agoraKit.leaveChannel(nil)
     // Step 3, please attention, stop preview after leave channel
     agoraKit.stopPreview()
-    
+
     // Step 4, remove all render views
     for session in videoSessions {
       session.hostingView.removeFromSuperview()
     }
     videoSessions.removeAll()
-    
+
     setIdleTimerActive(true)
   }
 }
 
 // MARK: - AgoraRtcEngineDelegate
 extension RoomViewController: AgoraRtcEngineDelegate {
-  
+
   /// Occurs when the local user joins a specified channel.
   /// - Parameters:
   ///   - engine: the Agora engine
@@ -282,100 +286,100 @@ extension RoomViewController: AgoraRtcEngineDelegate {
   ///   - uid: User ID. If the uid is specified in the joinChannelByToken method, the specified user ID is returned. If the user ID is not specified when the joinChannel method is called, the server automatically assigns a uid.
   ///   - elapsed: Time elapsed (ms) from the user calling the joinChannelByToken method until the SDK triggers this callback.
   func rtcEngine(_ engine: AgoraRtcEngineKit, didJoinChannel channel: String, withUid uid: UInt, elapsed: Int) {
-    
+
     print("### did join channel", channel, uid)
-    
+
     info(string: "Join channel: \(channel)")
   }
-  
+
   func rtcEngine(_ engine: AgoraRtcEngineKit, didJoinedOfUid uid: UInt, elapsed: Int) {
-    
+
     print("### did joined of uid", uid)
-    
+
     guard videoSessions.count <= maxVideoSession else {
       return
     }
-    
+
     let userSession = videoSession(of: uid)
     userSession.updateInfo(resolution: .init(width: 200, height: 200))
     agoraKit.setupRemoteVideo(userSession.canvas)
-    
+
   }
-  
+
   // first local video frame
   func rtcEngine(_ engine: AgoraRtcEngineKit, firstLocalVideoFrameWith size: CGSize, elapsed: Int) {
     print("### first local video frame")
-    
+
     if let selfSession = videoSessions.first {
       selfSession.updateInfo(resolution: size)
     }
   }
-  
+
   // user offline
   func rtcEngine(_ engine: AgoraRtcEngineKit, didOfflineOfUid uid: UInt, reason: AgoraUserOfflineReason) {
-    
+
     print("### did offline of uid", uid, reason)
-    
+
     var indexToDelete: Int?
     for (index, session) in videoSessions.enumerated() where session.uid == uid {
       indexToDelete = index
       break
     }
-    
+
     if let indexToDelete = indexToDelete {
       let deletedSession = videoSessions.remove(at: indexToDelete)
       deletedSession.hostingView.removeFromSuperview()
-      
+
       // release canvas's view
       deletedSession.canvas.view = nil
-      
+
       agoraKit.setupRemoteVideo(deletedSession.canvas)
     }
   }
-  
+
   func rtcEngine(_ engine: AgoraRtcEngineKit, didLeaveChannelWith stats: AgoraChannelStats) {
     print("### did leave channel", stats.userCount)
   }
-  
+
   func rtcEngine(_ engine: AgoraRtcEngineKit, remoteVideoStateChangedOfUid uid: UInt, state: AgoraVideoRemoteState, reason: AgoraVideoRemoteStateReason, elapsed: Int) {
     print("### remote video state changed of uid", uid)
   }
   func rtcEngine(_ engine: AgoraRtcEngineKit, remoteAudioStateChangedOfUid uid: UInt, state: AgoraAudioRemoteState, reason: AgoraAudioRemoteStateReason, elapsed: Int) {
     print("### remote audio state changed of uid", uid)
   }
-  
+
   // video muted
   func rtcEngine(_ engine: AgoraRtcEngineKit, didVideoMuted muted: Bool, byUid uid: UInt) {
     setVideoMuted(muted, forUid: uid)
   }
-  
+
   // remote stat
   func rtcEngine(_ engine: AgoraRtcEngineKit, remoteVideoStats stats: AgoraRtcRemoteVideoStats) {
     if let session = getSession(of: stats.uid) {
       session.updateVideoStats(stats)
     }
   }
-  
+
   // audio mixing
   func rtcEngineLocalAudioMixingDidFinish(_ engine: AgoraRtcEngineKit) {
     isAudioMixing = false
   }
-  
+
   /// Occurs when the connection between the SDK and the server is interrupted.
   func rtcEngineConnectionDidInterrupted(_ engine: AgoraRtcEngineKit) {
     alert(string: "Connection Interrupted")
   }
-  
+
   /// Occurs when the SDK cannot reconnect to Agora’s edge server 10 seconds after its connection to the server is interrupted.
   func rtcEngineConnectionDidLost(_ engine: AgoraRtcEngineKit) {
     alert(string: "Connection Lost")
   }
-  
+
   /// Reports an error during SDK runtime.
   func rtcEngine(_ engine: AgoraRtcEngineKit, didOccurError errorCode: AgoraErrorCode) {
     alert(string: "Occur error: \(errorCode.rawValue)")
   }
-  
+
 }
 
 // MARK: RoomOptionsVCDelegate
@@ -401,7 +405,7 @@ private extension RoomViewController {
     } else {
       var rank: Int
       var row: Int
-      
+
       if videoSessions.count == 0 {
         containerView.removeLayout(level: 0)
         return
@@ -415,24 +419,24 @@ private extension RoomViewController {
         rank = 2
         row = Int(ceil(Double(videoSessions.count) / Double(rank)))
       }
-      
+
       let itemWidth = CGFloat(1.0) / CGFloat(rank)
       let itemHeight = CGFloat(1.0) / CGFloat(row)
       let itemSize = CGSize(width: itemWidth, height: itemHeight)
       let layout = AGEVideoLayout(level: 0)
         .itemSize(.scale(itemSize))
-      
+
       containerView
         .listCount { [unowned self] (_) -> Int in
           return self.videoSessions.count
         }.listItem { [unowned self] (index) -> UIView in
           return self.videoSessions[index.item].hostingView
         }
-      
+
       containerView.setLayouts([layout], animated: true)
     }
   }
-  
+
   func getSession(of uid: UInt) -> VideoSession? {
     for session in videoSessions {
       if session.uid == uid {
@@ -441,7 +445,7 @@ private extension RoomViewController {
     }
     return nil
   }
-  
+
   func videoSession(of uid: UInt) -> VideoSession {
     if let fetchedSession = getSession(of: uid) {
       return fetchedSession
@@ -451,27 +455,27 @@ private extension RoomViewController {
       return newSession
     }
   }
-  
+
   func updateSelfViewVisiable() {
     guard let selfView = videoSessions.first?.hostingView else {
       return
     }
-    
+
     if videoSessions.count == 2 {
       selfView.isHidden = isVideoMuted
     } else {
       selfView.isHidden = false
     }
   }
-  
+
   func setVideoMuted(_ muted: Bool, forUid uid: UInt) {
     getSession(of: uid)?.isVideoMuted = muted
   }
-  
+
   func setIdleTimerActive(_ active: Bool) {
     UIApplication.shared.isIdleTimerDisabled = !active
   }
-  
+
   // Log
   func info(string: String) {
     guard !string.isEmpty else {
@@ -479,7 +483,7 @@ private extension RoomViewController {
     }
     messageVC?.append(info: string)
   }
-  
+
   func alert(string: String) {
     guard !string.isEmpty else {
       return
